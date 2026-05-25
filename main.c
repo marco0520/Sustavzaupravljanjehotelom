@@ -3,12 +3,16 @@
 #include "hotel.h"
 
 int main(void) {
-	Hotel hotel;
+    Hotel hotel;
 
-	inicijalizirajHotel(&hotel);
+    inicijalizirajHotel(&hotel);
 
-	prikaziNaslov();
-	glavniIzbornik(&hotel);
+    ucitajSobeIzDatoteke(&hotel);
 
-	return 0;
+    prikaziNaslov();
+    glavniIzbornik(&hotel);
+
+    spremiSobeUDatoteku(&hotel);
+
+    return 0;
 }
