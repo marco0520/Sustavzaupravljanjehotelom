@@ -5,167 +5,212 @@
 #include "hotel.h"
 
 void inicijalizirajHotel(Hotel* hotel) {
-	if (hotel == NULL) {
-		return;
-	}
+    if (hotel == NULL) {
+        return;
+    }
 
-	hotel->brojSoba = 0;
+    hotel->brojSoba = 0;
 }
 
 void prikaziNaslov(void) {
-	printf("=========================================\n");
-	printf("      SUSTAV ZA UPRAVLJANJE HOTELOM\n");
-	printf("=========================================\n\n");
+    printf("=========================================\n");
+    printf("      SUSTAV ZA UPRAVLJANJE HOTELOM\n");
+    printf("=========================================\n\n");
 }
 
 void glavniIzbornik(Hotel* hotel) {
-	int odabir = 0;
+    int odabir = 0;
 
-	do {
-		printf("Glavni izbornik:\n");
-		printf("1. Upravljanje sobama\n");
-		printf("2. Upravljanje tipovima soba\n");
-		printf("3. Izlaz iz programa\n");
-		printf("Odabir: ");
+    do {
+        printf("Glavni izbornik:\n");
+        printf("1. Upravljanje sobama\n");
+        printf("2. Upravljanje tipovima soba\n");
+        printf("3. Spremi sobe u datoteku\n");
+        printf("4. Izlaz iz programa\n");
+        printf("Odabir: ");
 
-		scanf("%d", &odabir);
+        scanf("%d", &odabir);
 
-		switch (odabir) {
-		case 1:
-			upravljanjeSobama(hotel);
-			break;
+        switch (odabir) {
+        case 1:
+            upravljanjeSobama(hotel);
+            break;
 
-		case 2:
-			upravljanjeTipovima();
-			break;
+        case 2:
+            upravljanjeTipovima();
+            break;
 
-		case 3:
-			printf("\nIzlaz iz programa.\n");
-			break;
+        case 3:
+            spremiSobeUDatoteku(hotel);
+            break;
 
-		default:
-			printf("\nNeispravan odabir.\n\n");
-			break;
-		}
+        case 4:
+            printf("\nIzlaz iz programa.\n");
+            break;
 
-	} while (odabir != 3);
+        default:
+            printf("\nNeispravan odabir.\n\n");
+            break;
+        }
+
+    } while (odabir != 4);
 }
 
 void upravljanjeSobama(Hotel* hotel) {
-	int odabir = 0;
+    int odabir = 0;
 
-	do {
-		printf("\n--- Upravljanje sobama ---\n");
-		printf("1. Dodaj sobu\n");
-		printf("2. Prikazi sobe\n");
-		printf("3. Povratak\n");
-		printf("Odabir: ");
+    do {
+        printf("\n--- Upravljanje sobama ---\n");
+        printf("1. Dodaj sobu\n");
+        printf("2. Prikazi sobe\n");
+        printf("3. Uredi sobu\n");
+        printf("4. Obrisi sobu\n");
+        printf("5. Sortiraj sobe po broju\n");
+        printf("6. Pretrazi sobu po broju\n");
+        printf("7. Povratak\n");
+        printf("Odabir: ");
 
-		scanf("%d", &odabir);
+        scanf("%d", &odabir);
 
-		switch (odabir) {
-		case 1:
-			dodajSobu(hotel);
-			break;
+        switch (odabir) {
+        case 1:
+            dodajSobu(hotel);
+            break;
 
-		case 2:
-			prikaziSobe(hotel);
-			break;
+        case 2:
+            prikaziSobe(hotel);
+            break;
 
-		case 3:
-			printf("\nPovratak na glavni izbornik.\n\n");
-			break;
+        case 3:
+            urediSobu(hotel);
+            break;
 
-		default:
-			printf("\nNeispravan odabir.\n");
-			break;
-		}
+        case 4:
+            obrisiSobu(hotel);
+            break;
 
-	} while (odabir != 3);
+        case 5:
+            sortirajSobePoBroju(hotel);
+            break;
+
+        case 6:
+            pretraziSobuPoBroju(hotel);
+            break;
+
+        case 7:
+            printf("\nPovratak na glavni izbornik.\n\n");
+            break;
+
+        default:
+            printf("\nNeispravan odabir.\n");
+            break;
+        }
+
+    } while (odabir != 7);
 }
 
 void upravljanjeTipovima(void) {
-	printf("\n--- Upravljanje tipovima soba ---\n");
-	printf("Ovaj dio programa jos nije implementiran.\n\n");
+    printf("\n--- Upravljanje tipovima soba ---\n");
+    printf("Ovaj dio programa je jos u irzadi.\n");
 }
 
-void dodajSobu(Hotel* hotel) {
-	Soba novaSoba;
+void spremiSobeUDatoteku(const Hotel* hotel) {
+    FILE* datoteka;
+    int i;
 
-	if (hotel == NULL) {
-		return;
-	}
+    if (hotel == NULL) {
+        return;
+    }
 
-	if (hotel->brojSoba >= MAX_BROJ_SOBA) {
-		printf("\nDosegnut je maksimalan broj soba.\n");
-		return;
-	}
+    datoteka = fopen(DATOTEKA_SOBA, "w");
 
-	printf("\n--- Dodavanje sobe ---\n");
+    if (datoteka == NULL) {
+        perror("\nGreska pri otvaranju datoteke za spremanje.\n\n");
+        return;
+    }
 
-	printf("Broj sobe: ");
-	scanf("%d", &novaSoba.brojSobe);
+    fprintf(datoteka, "Broj evidentiranih soba: %d\n\n", hotel->brojSoba);
 
-	printf("Kat: ");
-	scanf("%d", &novaSoba.kat);
+    for (i = 0; i < hotel->brojSoba; i++) {
+        fprintf(datoteka, "Soba %d\n", i + 1);
+        fprintf(datoteka, "Broj sobe: %d\n", hotel->sobe[i].brojSobe);
+        fprintf(datoteka, "Kat: %d\n", hotel->sobe[i].kat);
+        fprintf(datoteka, "Kapacitet: %d\n", hotel->sobe[i].kapacitet);
+        fprintf(datoteka, "Status: %d\n", hotel->sobe[i].status);
+        fprintf(datoteka, "------------------------------\n\n");
+    }
 
-	printf("Kapacitet: ");
-	scanf("%d", &novaSoba.kapacitet);
+    fclose(datoteka);
 
-	novaSoba.status = SLOBODNA;
-
-	novaSoba.tip.id = 0;
-	strcpy(novaSoba.tip.naziv, "Nije dodijeljen");
-	strcpy(novaSoba.tip.opis, "Tip sobe jos nije definiran");
-	novaSoba.tip.cijenaPoNoci = 0.0;
-
-	hotel->sobe[hotel->brojSoba] = novaSoba;
-	hotel->brojSoba++;
-
-	printf("\nSoba je uspjesno dodana.\n\n");
+    printf("\nSobe su uspjesno spremljene u datoteku.\n\n");
 }
 
-void prikaziSobe(const Hotel* hotel) {
-	int i;
+void ucitajSobeIzDatoteke(Hotel* hotel) {
+    FILE* datoteka;
+    char redak[100];
+    int brojSoba = 0;
+    int i;
 
-	if (hotel == NULL) {
-		return;
-	}
+    if (hotel == NULL) {
+        return;
+    }
 
-	if (hotel->brojSoba == 0) {
-		printf("\nNema evidentiranih soba.\n\n");
-		return;
-	}
+    datoteka = fopen(DATOTEKA_SOBA, "r");
 
-	printf("\n--- Popis soba ---\n");
+    if (datoteka == NULL) {
+        printf("Datoteka sa sobama jos ne postoji.\n");
+        printf("Krece se s praznom evidencijom.\n\n");
+        return;
+    }
 
-	for (i = 0; i < hotel->brojSoba; i++) {
-		printf("\nSoba %d\n", i + 1);
-		printf("Broj sobe: %d\n", hotel->sobe[i].brojSobe);
-		printf("Kat: %d\n", hotel->sobe[i].kat);
-		printf("Kapacitet: %d\n", hotel->sobe[i].kapacitet);
-		printf("Status: %s\n", statusUTekst(hotel->sobe[i].status));
-		printf("Tip sobe: %s\n", hotel->sobe[i].tip.naziv);
-	}
+    if (fgets(redak, sizeof(redak), datoteka) != NULL) {
+        sscanf(redak, "Broj evidentiranih soba: %d", &brojSoba);
+    }
 
-	printf("\n");
-}
+    if (brojSoba > MAX_BROJ_SOBA) {
+        brojSoba = MAX_BROJ_SOBA;
+    }
 
-const char* statusUTekst(StatusSobe status) {
-	switch (status) {
-	case SLOBODNA:
-		return "Slobodna";
+    hotel->brojSoba = 0;
 
-	case ZAUZETA:
-		return "Zauzeta";
+    for (i = 0; i < brojSoba; i++) {
+        Soba soba;
+        int statusBroj = 1;
 
-	case CISCENJE:
-		return "Ciscenje";
+        while (fgets(redak, sizeof(redak), datoteka) != NULL) {
+            if (strncmp(redak, "Soba", 4) == 0) {
+                break;
+            }
+        }
 
-	case ODRZAVANJE:
-		return "Odrzavanje";
+        if (fgets(redak, sizeof(redak), datoteka) != NULL) {
+            sscanf(redak, "Broj sobe: %d", &soba.brojSobe);
+        }
 
-	default:
-		return "Nepoznato";
-	}
+        if (fgets(redak, sizeof(redak), datoteka) != NULL) {
+            sscanf(redak, "Kat: %d", &soba.kat);
+        }
+
+        if (fgets(redak, sizeof(redak), datoteka) != NULL) {
+            sscanf(redak, "Kapacitet: %d", &soba.kapacitet);
+        }
+
+        if (fgets(redak, sizeof(redak), datoteka) != NULL) {
+            sscanf(redak, "Status: %d", &statusBroj);
+        }
+
+        soba.status = (StatusSobe)statusBroj;
+
+        soba.tip.id = 0;
+        strcpy(soba.tip.naziv, "Nije dodijeljen");
+        strcpy(soba.tip.opis, "Tip sobe jos nije definiran");
+        soba.tip.cijenaPoNoci = 0.0;
+
+        hotel->sobe[hotel->brojSoba] = soba;
+        hotel->brojSoba++;
+    }
+
+    fclose(datoteka);
+
+    printf("Sobe su uspjesno ucitane iz datoteke.\n\n");
 }
